@@ -16,7 +16,9 @@ export default function App() {
           <Header />
           <Switch>
             <ErrorBoundary>
-              {routes.map(route => <Route key={route.title} {...route} />)}
+              <React.Suspense fallback={<h3>Loading page content...</h3>}>
+                {routes.map(route => <Route key={route.title} {...route} />)}
+              </React.Suspense>
             </ErrorBoundary>
           </Switch>
         </Router>
