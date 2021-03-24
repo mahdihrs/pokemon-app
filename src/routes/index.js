@@ -1,7 +1,3 @@
-// import Pokemons from '../pages/pokemons';
-// import PokemonDetail from '../pages/pokemon-detail/pokemon-detail';
-// import MyPokemon from '../pages/my-pokemon';
-
 import {
   Pokemons,
   PokemonDetail,
