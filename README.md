@@ -9,4 +9,3 @@ or
 ```
 npm test
 ```
-After the app ready, you can open http://localhost:5000
