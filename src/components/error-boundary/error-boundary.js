@@ -7,7 +7,6 @@ function ErrorBoundary({ children }) {
   return (
     <ReactErrorBoundary
       FallbackComponent={ErrorFallback}
-      // resetKeys={[]}
     >
       {children}
     </ReactErrorBoundary>

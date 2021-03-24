@@ -7,18 +7,15 @@ import { usePokemon } from '../utils/contexts/pokemon-context';
 
 export default function MyPokemons() {
   const [{ pokemonCatched }] = usePokemon();
-  // const [myPokemons, setPokemons] = React.useState(() => JSON.parse(localStorage.getItem('myPokemons')), {});
   const [pokemons, setPokemons] = React.useState([]);
-  // console.log(pokemons)
 
   React.useEffect(() => {
     setPokemons(map(pokemonCatched, (val, key) => ({
       ...val,
       nickname: key
     })))
-    console.log(pokemonCatched)
   }, [pokemonCatched]);
-  // TO DO : create release button on PokemonCard
+
   return (
     <Container>
       <GridContainer>

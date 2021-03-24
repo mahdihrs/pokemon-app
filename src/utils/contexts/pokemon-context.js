@@ -8,9 +8,9 @@ export const CACHED_POKEMONS = 'pokemon/detail/set-cached-all-pokemons';
 export const CACHED_POKEMON_DETAIL = 'pokemon/detail/set-cached';
 export const CATCH_POKEMON = 'pokemon/detail/catch-pokemon';
 export const RELEASE_POKEMON = 'pokemon/detail/release-pokemon';
+export const SET_NEW_ITEMS_TO_SHOW = 'pokemon/set-pokemons-total-to-show';
 
 const pokemonReducer = (state, action) => {
-  // console.log(action, 'action')
   switch (action.type) {
     case CACHED_POKEMONS:
       return {
@@ -38,6 +38,11 @@ const pokemonReducer = (state, action) => {
         ...state,
         pokemonCatched: action.pokemonToCatch
       }
+    case SET_NEW_ITEMS_TO_SHOW:
+      return {
+        ...state,
+        limit: action.limit
+      }
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }
@@ -48,11 +53,11 @@ export const PokemonProvider = ({ children }) => {
     pokemons: null,
     pokemonDetail: null,
     pokemonCatched: JSON.parse(localStorage.getItem('myPokemons') || '{}'),
-    pokemonCached: {}
+    pokemonCached: {},
+    limit: 10
   })
 
-  // TO DO : use useMemo
-  const value = [state, dispatch];
+  const value = React.useMemo(() => [state, dispatch], [state]);
   return <PokemonContext.Provider value={value}>{children}</PokemonContext.Provider>
 }
 

@@ -22,25 +22,5 @@ const routes = [
     component: MyPokemon,
   }
 ];
-// const routes = {
-//   pokemon: {
-//     title: 'Pokemons List',
-//     path: '/',
-//     exact: true,
-//     component: PokemonList,
-//   },
-//   pokemonDetail: {
-//     title: 'Pokemon Detail',
-//     path: '/pokemon/:name',
-//     exact: true,
-//     component: PokemonDetail,
-//   },
-//   myPokemon: {
-//     title: 'My Pokemon',
-//     path: '/my-pokemon',
-//     exact: true,
-//     component: MyPokemon,
-//   },
-// };
 
 export default routes;

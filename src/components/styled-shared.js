@@ -71,3 +71,8 @@ export const Button = styled.button`
   background-color: #D7D7D7;
   border-radius: 20px;
 `;
+
+export const Select = styled.select`
+  margin-bottom: 3rem;
+  padding: .7rem 2rem;
+`;

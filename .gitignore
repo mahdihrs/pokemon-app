@@ -15,3 +15,7 @@ node_modules/
 ehthumbs.db
 Thumbs.db
 .env
+
+/.firebase
+.firebaserc
+firebase.json

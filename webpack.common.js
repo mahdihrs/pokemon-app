@@ -46,7 +46,6 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       appMountId: 'app',
-      // Now when we have template with id="root" we need to tell webpack to generate index.html which will mirror our index.html file.
       template: './src/index.html'
     }),
     new LodashModuleReplacementPlugin,
@@ -70,38 +69,3 @@ const config = {
 };
 
 module.exports = config;
-
-// const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-// module.exports = {
-//   entry: {
-//     app: './src/index.js',
-//   },
-//   plugins: [
-//     new HtmlWebpackPlugin({
-//       title: 'Production',
-//       // Now when we have template with id="root" we need to tell webpack to generate index.html which will mirror our index.html file.
-//       template: './src/index.html'
-//     }),
-//   ],
-//   devtool: 'inline-source-map',
-//   devServer: {
-//     contentBase: './dist',
-//     hot: true,
-//   },
-//   output: {
-//     filename: '[name].bundle.js',
-//     path: path.resolve(__dirname, 'dist'),
-//     clean: true,
-//   },
-//   module: {
-//     rules: [
-//       {
-//         test: /\.(js|jsx)$/,
-//         exclude: /node_modules/,
-//         use: 'babel-loader'
-//       }
-//     ]
-//   },
-// };

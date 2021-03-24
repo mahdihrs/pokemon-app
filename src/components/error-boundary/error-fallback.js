@@ -1,3 +1,4 @@
+import * as React from 'react';
 import somethingWrong from '../../assets/images/something-wrong.svg';
 import {
   ErrorContainer,

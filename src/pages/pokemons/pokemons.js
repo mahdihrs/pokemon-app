@@ -1,52 +1,46 @@
 /** @jsx jsx */
 import React from 'react';
 // import { FixedSizeList as List } from 'react-window';
-import { useQuery } from '@apollo/client';
-import Lottie from 'react-lottie';
-import { jsx, css } from '@emotion/react';
+import { useLazyQuery } from '@apollo/client';
+import { jsx } from '@emotion/react'
 import { GET_POKEMONS, getPokemonsVariables } from '../../utils/queries';
 import { Container, GridContainer } from './components';
+import Select from '../../components/select';
 import loaderAnimation from '../../assets/lotties/pikachu-loader.json';
-import { CACHED_POKEMONS, usePokemon } from '../../utils/contexts/pokemon-context';
+import { usePokemon, SET_NEW_ITEMS_TO_SHOW } from '../../utils/contexts/pokemon-context';
 import defaultLottiesOptions from '../../utils/lotties';
 import PokemonCard from '../../components/pokemon-card';
+import Lottie from '../../components/lottie';
 
-function Pokemon() {
-  const [, dispatch] = usePokemon();
-  const { loading, error, data } = useQuery(GET_POKEMONS, {
-    variables: getPokemonsVariables({
-      limit: 10
-      // limit: 1118
-    })
-  });
+export default function Pokemon() {
+  const [{ limit }, dispatch] = usePokemon();
+  const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS);
 
   React.useEffect(() => {
-    if (data) {
-      dispatch({
-        type: CACHED_POKEMONS,
-        pokemons: data.pokemons.results
-      })
-    }
-  }, [data, dispatch]);
+    getPokemons({
+      variables: getPokemonsVariables({ limit })
+    });
+  }, [getPokemons, limit]);
 
-  if (error) return `Error! ${error.message}`;
-  console.log(data, 'data')
+  const handleChange = ({ target: { value } }) => {
+    dispatch({
+      type: SET_NEW_ITEMS_TO_SHOW,
+      limit: +value
+    })
+  }
+
+  if (error) throw new Error(`Error! ${error.message}`);
 
   return (
     <Container>
       {loading ? (
-        <div css={css`display: flex; flex-direction: column; align-items: center;`}>
-          <Lottie
-            options={defaultLottiesOptions({ animationData: loaderAnimation })}
-            height={150}
-            width={150}
-            speed={0.35}
-          />
+        <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Lottie animationData={defaultLottiesOptions({ animationData: loaderAnimation })} />
           <span>Finding pokemons...</span>
         </div>
       ) : (
         <>
-          {/* <Example itemData={data?.pokemons.results} /> */}
+          <Select handleChange={handleChange} value={limit} />
           <GridContainer>
             {!loading && data?.pokemons.results.map((pok, index) =>
               <PokemonCard key={pok.name} data={{ ...pok, index }} />
@@ -67,7 +61,7 @@ function Pokemon() {
 //   // )
 // };
 
-// const Example = ({ itemData }) => (
+// const PokemonsWindowed = ({ itemData }) => (
 //   <List
 //     height={150}
 //     itemCount={1118}
@@ -79,5 +73,3 @@ function Pokemon() {
 //     {Row}
 //   </List>
 // );
-
-export default Pokemon;

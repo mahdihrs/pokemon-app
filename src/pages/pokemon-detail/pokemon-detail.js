@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import Lottie from 'react-lottie';
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import * as React from 'react';
+import { jsx, css } from '@emotion/react';
 import map from 'lodash.map';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 
 import { GET_POKEMON_DETAIL, getPokemonDetailVariables } from '../../utils/queries';
-import { usePokemon, CACHED_POKEMON_DETAIL, CATCH_POKEMON } from '../../utils/contexts/pokemon-context';
-// import { PokemonDetailProvider } from '../../utils/contexts/pokemon-detail-context';
-import {
-  Container,
-  PokemonCard,
-  TopContainer,
-  CatchButton
-} from './components';
-// import CatchButton from '../../components/catch-button';
+import { usePokemon, CATCH_POKEMON } from '../../utils/contexts/pokemon-context';
+import { Container, PokemonCard, TopContainer, CatchButton } from './components';
 import pokeballBW from '../../assets/icons/pokeball-bw.svg';
 import pokeball from '../../assets/icons/pokeball.svg';
 import pokeballAnimated from '../../assets/lotties/catch-in-progress.json';
-import defaultLottiesOptions from '../../utils/lotties';
+import Lottie from '../../components/lottie';
 import {
   catchAnotherPokemonAndGiveNickname,
   showModalAndGiveNickname,
@@ -26,31 +21,26 @@ import {
 } from '../../utils/alerts';
 
 export default function PokemonDetail() {
-  const match = useParams();
-  // console.log(match, 'match')
-  const name = match?.name;
-  const [{ pokemonCached, pokemonCatched }, dispatch] = usePokemon();
-  const { loading, error, data } = useQuery(GET_POKEMON_DETAIL, {
-    variables: getPokemonDetailVariables(name)
-  });
-  const myPokemonsName = map(pokemonCatched, (val, key) => val.name);
-  const [isPokemonCatched, setIsPokemonCatched] = useState(() => myPokemonsName.find(pokemonName => pokemonName === name) ? true : false);
-  const [pokemonName, setPokemonName] = useState('');
-  const [catchInProgress, setCatchInProgress] = useState(false);
-  const pokemonToShow = pokemonCached[name] || data?.pokemon;
-  const types = pokemonToShow?.types.map(pokemon => pokemon.type.name);
-  const moves = pokemonToShow?.moves.map(pokemon => pokemon.move.name);
+  const { name } = useParams();
+  const [{ pokemonCatched }, dispatch] = usePokemon();
+  const [getPokemonDetail, { loading, error, data }] = useLazyQuery(GET_POKEMON_DETAIL);
+  const myPokemonsName = map(pokemonCatched, (val) => val.name);
+  const [isPokemonCatched, setIsPokemonCatched] = React.useState(() => myPokemonsName.find(pokemonName => pokemonName === name) ? true : false);
+  const [pokemonName, setPokemonName] = React.useState('');
+  const [catchInProgress, setCatchInProgress] = React.useState(false);
+  const pokemonToShow = data?.pokemon;
+  const [types, setTypes] = React.useState([]);
+  const [moves, setMoves] = React.useState([]);
 
-  useEffect(() => {
-    if (data && !pokemonCached[name]) {
-      dispatch({
-        type: CACHED_POKEMON_DETAIL,
-        pokemonToCache: {
-          [name]: data?.pokemon
-        }
-      })
-    }
-  }, [data, dispatch, name, pokemonCached]);
+  React.useEffect(() => {
+    getPokemonDetail({
+      variables: getPokemonDetailVariables(name)
+    })
+    const pokemonTypes = data?.pokemon.types.map(pokemon => pokemon.type.name);
+    const pokemonMoves = data?.pokemon.moves.map(pokemon => pokemon.move.name);
+    setTypes(pokemonTypes);
+    setMoves(pokemonMoves);
+  }, [getPokemonDetail, name, data])
 
   const handleClick = () => {
     const isCatchSucceed = Math.floor(Math.random() * (2 - 0) + 0);
@@ -81,7 +71,7 @@ export default function PokemonDetail() {
 
   const givePokemonNickname = async () => {
     const newNickname = await showModalAndGiveNickname();
-    const isNicknameDuplicate = Object.keys(pokemonCatched).find(nickname => nickname === newNickname );
+    const isNicknameDuplicate = Object.keys(pokemonCatched).find(nickname => nickname === newNickname);
 
     if (newNickname && !isNicknameDuplicate) {
       setPokemonName(newNickname);
@@ -97,45 +87,35 @@ export default function PokemonDetail() {
     }
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (pokemonCatched?.[pokemonName]?.name) {
       setIsPokemonCatched(true);
     }
   }, [pokemonCatched, name, pokemonName]);
 
   if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
-  // console.log(pokemonToShow, 'data')
-  console.log(data, 'data pok')
+  if (error) throw new Error(`Error! ${error.message}`);
 
   return (
     <Container>
-      {/* <PokemonDetailProvider> */}
       <PokemonCard>
         <TopContainer>
-          {/* // TO DO style={{}} */}
-          <img src={pokemonToShow?.sprites.front_default} alt={pokemonToShow?.name} style={{ height: '200px' }} />
+          <img
+            src={pokemonToShow?.sprites.front_default}
+            alt={pokemonToShow?.name}
+            css={css`height: 200px;`}
+          />
           <h1>{pokemonToShow?.name}</h1>
-          {/* <CatchButton /> */}
           <CatchButton onClick={handleClick}>
-            {catchInProgress ? (
-              <Lottie
-                options={defaultLottiesOptions({ animationData: pokeballAnimated })}
-                height={50}
-                width={50}
-                speed={0.35}
-              />
-            ) : (
-              <img src={isPokemonCatched ? pokeball : pokeballBW} alt="pokeball" height="50px" />
-            )}
+            {catchInProgress ? (<Lottie animationData={pokeballAnimated} />) : (
+              <img src={isPokemonCatched ? pokeball : pokeballBW} alt="pokeball" height="50px" />)}
           </CatchButton>
         </TopContainer>
         <h2>Types</h2>
-        <ul>{types.map(type => <li key={type}>{type}</li>)}</ul>
+        <ul>{types?.map(type => <li key={type}>{type}</li>)}</ul>
         <h2>Moves</h2>
-        <ul>{moves.map(move => <li key={move}>{move}</li>)}</ul>
+        <ul>{moves?.map(move => <li key={move}>{move}</li>)}</ul>
       </PokemonCard>
-      {/* </PokemonDetailProvider> */}
     </Container>
   );
 }
