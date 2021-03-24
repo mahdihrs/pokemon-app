@@ -3,12 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.3.12",
+    "@emotion/react": "^11.1.5",
+    "@emotion/styled": "^11.1.5",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
+    "@testing-library/react-hooks": "^5.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "graphql": "^15.5.0",
+    "lodash.map": "^4.6.0",
+    "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-error-boundary": "^3.1.1",
+    "react-lottie": "^1.2.3",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-window": "^1.8.6",
+    "sweetalert2": "^10.15.6",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
@@ -34,5 +46,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.12.17",
+    "@react-mock/localstorage": "^0.1.2",
+    "jest-canvas-mock": "^2.3.1",
+    "mock-apollo-client": "^1.0.0",
+    "prettier": "^2.2.1"
   }
 }
