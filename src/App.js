@@ -1,4 +1,5 @@
 import React from 'react';
+import { hot } from 'react-hot-loader/root';
 import { ApolloProvider } from '@apollo/client';
 import { Switch, Route, BrowserRouter as Router, } from 'react-router-dom';
 
@@ -8,7 +9,7 @@ import client from './utils/graphql';
 import Header from './components/header';
 import routes from './routes';
 
-export default function App() {
+function App() {
   return (
     <ApolloProvider client={client}>
       <PokemonProvider>
@@ -26,3 +27,5 @@ export default function App() {
     </ApolloProvider>
   )
 }
+
+export default hot(App);
