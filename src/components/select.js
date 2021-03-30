@@ -7,7 +7,7 @@ export default function SelectComponent({ handleChange, value }) {
   return (
     <Select onChange={handleChange} name="limit">
       {options.map(option =>
-        <option value={option} selected={option === value}>{option}</option>
+        <option key={option} value={option} selected={option === value}>{option}</option>
       )}
     </Select>
   );
